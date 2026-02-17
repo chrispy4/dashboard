@@ -21,6 +21,10 @@
 </head>
     <body>
         <h1>Data Table from JSON File</h1>
+        <div style="text-align:center; margin-bottom:40px;">
+            <label style="font-size:40px; margin-right:20px;">Location:</label>
+            <select id="locationFilter" style="font-size:36px; padding:15px 25px;"></select>
+        </div>
 
         <div style="margin-bottom:10px;">
             <button id="exportBtn">Export CSV</button>
@@ -39,37 +43,113 @@
         </div>
 
         <style>
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 32px;                 /* Large base text */
+            background-color: #111;          /* Dark mode for glare reduction */
+            color: #fff;
+            margin: 40px;
+        }
+
+        /* Main Title */
+        h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Section Titles */
+        h2 {
+            font-size: 48px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* Last updated text */
+        #lastUpdated {
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #aaa;
+        }
+
         .table-container {
             display: flex;
-            gap: 40px;
+            gap: 100px;                       /* Wide separation */
+            justify-content: center;
         }
 
+        /* Tables */
         table {
             border-collapse: collapse;
-            width: 100%;
+            min-width: 1600px;                /* Prevent cramped columns */
+            background-color: #222;
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
+        /* Headers */
         th {
-            background-color: #f2f2f2;
+            background-color: #000;
+            color: #00ffcc;                   /* Bright header text */
+            font-size: 34px;
+            padding: 25px 20px;
+            border: 2px solid #333;
         }
+
+        /* Cells */
+        td {
+            padding: 22px 20px;
+            font-size: 32px;
+            border: 1px solid #333;
+        }
+
+        /* Alternating rows */
+        tbody tr:nth-child(even) {
+            background-color: #2a2a2a;
+        }
+
+        /* Strong overdue highlight */
+        .overdue {
+            background-color: #ff3333 !important;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Filter inputs (larger for visibility) */
+        thead input {
+            font-size: 26px;
+            padding: 12px;
+            height: 55px;
+            width: 95%;
+        }
+
+        /* Large sort arrows */
+        th span {
+            font-size: 26px;
+            margin-left: 10px;
+        }
+
+        button {
+            font-size: 30px;
+            padding: 15px 35px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
         </style>
+
         <script>
+            let selectedLocation = "ALL";
+
             const headers = [
                 "Contract",
                 "Lot",
-                "QuantityAtProcess",
-                "Status",
+                "Assembly",
+                "Quantity",
                 "StartDate",
-                "EndDate",
-                "ContractDrawing",
-                "Location"
+                "EndDate"
             ];
+
 
             // Separate table states
             const tables = {
@@ -86,6 +166,47 @@
                     sort: { column: null, asc: true }
                 }
             };
+
+            function populateLocationFilter(data) {
+                const select = document.getElementById("locationFilter");
+
+                // Get unique locations
+                const locations = [...new Set(
+                    data.map(d => d.Location).filter(l => l)
+                )].sort();
+
+                // Add "All" option
+                select.innerHTML = `<option value="ALL">All Locations</option>`;
+
+                locations.forEach(loc => {
+                    const option = document.createElement("option");
+                    option.value = loc;
+                    option.textContent = loc;
+                    select.appendChild(option);
+                });
+
+                select.addEventListener("change", () => {
+                    selectedLocation = select.value;
+                    applyGlobalLocationFilter();
+                });
+            }
+
+            function applyGlobalLocationFilter() {
+                Object.keys(tables).forEach(tableKey => {
+                    const tableObj = tables[tableKey];
+
+                    if (selectedLocation === "ALL") {
+                        tableObj.filteredData = [...tableObj.fullData];
+                    } else {
+                        tableObj.filteredData = tableObj.fullData.filter(
+                            row => row.Location === selectedLocation
+                        );
+                    }
+
+                    generateTableBody(tableKey);
+                });
+            }
+
 
             function formatDate(dateString) {
                 if (!dateString) return "";
@@ -273,14 +394,16 @@
                         return {
                             Contract: item.Contract,
                             Lot: item.Lot,
-                            QuantityAtProcess: item.QuantityAtProcess,
-                            Status: status,
+                            Quantity: item.QuantityAtProcess,   // renamed
+                            Status: status,                     // still stored for splitting
                             StartDate: item.StartDate,
                             EndDate: item.EndDate,
-                            ContractDrawing: item.ContractDrawing,
+                            Assembly: item.ContractDrawing,     // renamed
                             Location: item.Location ?? ""
                         };
                     });
+
+                populateLocationFilter(transformed);
 
                 tables.left.element = document.querySelector("#left-table");
                 tables.right.element = document.querySelector("#right-table");
