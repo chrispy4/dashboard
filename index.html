@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON to HTML Table</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Data Table from JSON File</h1>
+    <div style="margin-bottom:10px;">
+        <button id="exportBtn">Export CSV</button>
+    </div>
+
+    <table id="data-table" border="1" cellpadding="5" cellspacing="0"></table>
+
+    <table id="data-table">
+        <thead>
+            <!-- Table headers will be inserted here by JavaScript -->
+        </thead>
+        <tbody>
+            <!-- Table rows will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        const headers = [
+            "Contract",
+            "Lot",
+            "QuantityAtProcess",
+            "Status",
+            "StartDate",
+            "EndDate",
+            "ContractDrawing",
+            "Location"  
+        ];
+
+        let fullData = [];
+        let filteredData = [];
+        let currentSort = { column: null, asc: true };
+
+        function formatDate(dateString) {
+            if (!dateString) return "";
+            const date = new Date(dateString);
+            if (isNaN(date)) return dateString;
+
+            return date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "2-digit"
+            });
+        }
+
+        function detectType(value) {
+            if (!isNaN(value)) return "number";
+            if (!isNaN(Date.parse(value))) return "date";
+            return "string";
+        }
+
+        function generateTableHead(table) {
+            let thead = table.createTHead();
+            let row = thead.insertRow();
+
+            headers.forEach(header => {
+                let th = document.createElement("th");
+                th.textContent = header;
+                th.style.cursor = "pointer";
+
+                let arrow = document.createElement("span");
+                arrow.style.marginLeft = "5px";
+                th.appendChild(arrow);
+
+                th.addEventListener("click", () => sortColumn(header));
+                row.appendChild(th);
+            });
+
+            // Filter row
+            let filterRow = thead.insertRow();
+            headers.forEach(() => {
+                let th = document.createElement("th");
+                let input = document.createElement("input");
+                input.placeholder = "Filter...";
+                input.style.width = "95%";
+
+                input.addEventListener("input", applyFilters);
+                th.appendChild(input);
+                filterRow.appendChild(th);
+            });
+        }
+
+        function generateTableBody(table, data) {
+            let oldTbody = table.querySelector("tbody");
+            if (oldTbody) oldTbody.remove();
+
+            let tbody = table.createTBody();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // normalize time
+
+            data.forEach(rowData => {
+                let row = tbody.insertRow();
+
+                let isOverdue = false;
+
+                headers.forEach(key => {
+                    let cell = row.insertCell();
+                    let value = rowData[key] ?? "";
+
+                    if (key === "EndDate" && value) {
+                        const endDate = new Date(value);
+                        if (!isNaN(endDate)) {
+                            endDate.setHours(0, 0, 0, 0);
+                            if (today > endDate) {
+                                isOverdue = true;
+                            }
+                        }
+                        value = formatDate(value);
+                    }
+
+                    if (key === "StartDate" && value) {
+                        value = formatDate(value);
+                    }
+
+                    cell.textContent = value;
+
+                    if (currentSort.column === key) {
+                        cell.style.backgroundColor = "#f2f2f2";
+                    }
+                });
+
+                // Highlight entire row if overdue
+                if (isOverdue) {
+                    row.style.backgroundColor = "#ffe5e5"; // light red
+                }
+            });
+        }
+
+
+        function sortColumn(header) {
+            if (currentSort.column === header) {
+                currentSort.asc = !currentSort.asc;
+            } else {
+                currentSort.column = header;
+                currentSort.asc = true;
+            }
+
+            const type = detectType(filteredData[0]?.[header]);
+
+            filteredData.sort((a, b) => {
+                let valA = a[header] ?? "";
+                let valB = b[header] ?? "";
+
+                if (type === "number") {
+                    valA = Number(valA);
+                    valB = Number(valB);
+                } else if (type === "date") {
+                    valA = new Date(valA);
+                    valB = new Date(valB);
+                } else {
+                    valA = valA.toString().toLowerCase();
+                    valB = valB.toString().toLowerCase();
+                }
+
+                if (valA > valB) return currentSort.asc ? 1 : -1;
+                if (valA < valB) return currentSort.asc ? -1 : 1;
+                return 0;
+            });
+
+            updateSortArrows();
+            generateTableBody(document.querySelector("#data-table"), filteredData);
+        }
+
+        function updateSortArrows() {
+            const ths = document.querySelectorAll("thead tr:first-child th");
+
+            ths.forEach((th, index) => {
+                const arrow = th.querySelector("span");
+                arrow.textContent = "";
+
+                if (headers[index] === currentSort.column) {
+                    arrow.textContent = currentSort.asc ? "▲" : "▼";
+                }
+            });
+        }
+
+        function applyFilters() {
+            const inputs = document.querySelectorAll("thead input");
+
+            filteredData = fullData.filter(row => {
+                return headers.every((header, index) => {
+                    const filterValue = inputs[index].value.toLowerCase();
+                    const cellValue = (row[header] ?? "").toString().toLowerCase();
+                    return cellValue.includes(filterValue);
+                });
+            });
+
+            generateTableBody(document.querySelector("#data-table"), filteredData);
+        }
+
+        function exportToCSV() {
+            let csv = headers.join(",") + "\n";
+
+            filteredData.forEach(row => {
+                let rowValues = headers.map(h => `"${row[h] ?? ""}"`);
+                csv += rowValues.join(",") + "\n";
+            });
+
+            let blob = new Blob([csv], { type: "text/csv" });
+            let url = URL.createObjectURL(blob);
+
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "export.csv";
+            a.click();
+        }
+
+        document.getElementById("exportBtn")
+            .addEventListener("click", exportToCSV);
+
+        fetch('./data3.json')
+            .then(res => res.json())
+            .then(data => {
+
+                fullData = data.ProductionConsoleProcess
+                    // Remove Fab - Inspection
+                    .filter(item =>
+                        item.Process?.trim().toLowerCase() !== "fab - inspection"
+                    )
+                    // Transform Process → Status and include Location
+                    .map(item => {
+
+                        let status = item.Process;
+
+                        if (status === "Fab - Fit-Up") {
+                            status = "Not In Shop";
+                        } else if (status === "Fab - Welding") {
+                            status = "In Shop";
+                        }
+
+                        return {
+                            Contract: item.Contract,
+                            Lot: item.Lot,
+                            QuantityAtProcess: item.QuantityAtProcess,
+                            Status: status,
+                            EndDate: item.EndDate,
+                            StartDate: item.StartDate,
+                            ContractDrawing: item.ContractDrawing,
+                            Location: item.Location ?? ""  // pull in location safely
+                        };
+                    });
+
+                filteredData = [...fullData];
+
+                const table = document.querySelector("#data-table");
+                generateTableHead(table);
+                generateTableBody(table, filteredData);
+            });
+
+
+
+
+    </script>
+
+</body>
+</html>
