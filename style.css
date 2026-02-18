@@ -1,0 +1,108 @@
+
+
+table {
+    border-collapse: collapse;
+    width: 50%;
+    margin: 5px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center
+}
+th {
+    background-color: #f2f2f2;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 32px;                 /* Large base text */
+    background-color: #111;          /* Dark mode for glare reduction */
+    color: #fff;
+    margin: 40px;
+}
+
+/* Main Title */
+h1 {
+    font-size: 72px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Section Titles */
+h2 {
+    font-size: 48px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Last updated text */
+#lastUpdated {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #aaa;
+}
+
+.table-container {
+    display: flex;
+    gap: 100px;                       /* Wide separation */
+    justify-content: center;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    min-width: 1600px;                /* Prevent cramped columns */
+    background-color: #222;
+}
+
+/* Headers */
+th {
+    background-color: #000;
+    color: #00ffcc;                   /* Bright header text */
+    font-size: 70px;
+    padding: 25px 20px;
+    border: 2px solid #333;
+}
+
+/* Cells */
+td {
+    padding: 22px 20px;
+    font-size: 60px;
+    border: 1px solid #333;
+}
+
+/* Alternating rows */
+tbody tr:nth-child(even) {
+    background-color: #2a2a2a;
+}
+
+/* Strong overdue highlight */
+.overdue {
+    background-color: #e20606 !important;
+    color: #eb1111;
+    font-weight: bold;
+}
+
+/* Filter inputs (larger for visibility) */
+thead input {
+    font-size: 26px;
+    padding: 12px;
+    height: 55px;
+    width: 95%;
+}
+
+/* Large sort arrows */
+th span {
+    font-size: 26px;
+    margin-left: 10px;
+}
+
+button {
+    font-size: 30px;
+    padding: 15px 35px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
