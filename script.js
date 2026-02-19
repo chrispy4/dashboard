@@ -4,11 +4,10 @@ const headers = [
     "Contract",
     "Lot",
     "Assembly",
-    "Quantity",
+    "Qty",
     "StartDate",
     "EndDate"
 ];
-
 
 // Separate table states
 const tables = {
@@ -65,7 +64,6 @@ function applyGlobalLocationFilter() {
         generateTableBody(tableKey);
     });
 }
-
 
 function formatDate(dateString) {
     if (!dateString) return "";
@@ -232,7 +230,7 @@ function applyFilters(tableKey) {
     generateTableBody(tableKey);
 }
 
-fetch('./data3.json')
+fetch('./data.json')
 .then(res => res.json())
 .then(data => {
 
@@ -253,7 +251,7 @@ fetch('./data3.json')
             return {
                 Contract: item.Contract,
                 Lot: item.Lot,
-                Quantity: item.QuantityAtProcess,   // renamed
+                Qty: item.QuantityAtProcess,   // renamed
                 Status: status,                     // still stored for splitting
                 StartDate: item.StartDate,
                 EndDate: item.EndDate,

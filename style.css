@@ -61,15 +61,14 @@ table {
 th {
     background-color: #000;
     color: #00ffcc;                   /* Bright header text */
-    font-size: 70px;
-    padding: 25px 20px;
+    font-size: 77px;
+    padding: 25px 25px;
     border: 2px solid #333;
 }
 
 /* Cells */
 td {
-    padding: 22px 20px;
-    font-size: 60px;
+    font-size: 65px;
     border: 1px solid #333;
 }
 
