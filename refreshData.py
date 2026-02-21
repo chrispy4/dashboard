@@ -87,7 +87,8 @@ else:
   code = get_Data()
   if code != 200:
     print("Request was not 200, token could be invalid, fetching token")
-    get_Token
-    get_Data
+    get_Token()
+    time.sleep(10)
+    get_Data()
   else:
      print("Call using pre-existing token was successful")

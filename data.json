@@ -4636,7 +4636,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 398489,
+      "DrawingRevisionId": 399167,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -4752,7 +4752,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 398491,
+      "DrawingRevisionId": 399187,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -12176,7 +12176,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 405818,
+      "DrawingRevisionId": 405915,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -12408,7 +12408,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 405816,
+      "DrawingRevisionId": 405913,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -12640,7 +12640,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 405817,
+      "DrawingRevisionId": 405914,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -12756,7 +12756,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 403222,
+      "DrawingRevisionId": 415799,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -12988,7 +12988,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 403221,
+      "DrawingRevisionId": 405908,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -15888,7 +15888,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406892,
+      "DrawingRevisionId": 420643,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -16004,7 +16004,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406938,
+      "DrawingRevisionId": 417270,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -16120,7 +16120,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406889,
+      "DrawingRevisionId": 417250,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -16352,7 +16352,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406890,
+      "DrawingRevisionId": 417251,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -16932,7 +16932,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406893,
+      "DrawingRevisionId": 417256,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -17048,7 +17048,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406891,
+      "DrawingRevisionId": 417255,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -18208,7 +18208,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 346063,
+      "DrawingRevisionId": 380615,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -18324,13 +18324,13 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 346048,
+      "DrawingRevisionId": 380402,
       "NcContractItemId": null,
       "HasModel": false
     },
     {
       "CuttingPlanID": null,
-      "DeliveryNote": null,
+      "DeliveryNote": "SIT-000004494",
       "Contract": "25601",
       "WorkOrder": "M-WO-000114255",
       "Phase": "2",
@@ -18378,8 +18378,8 @@
       "Notes": null,
       "ProductionWorkOrderProcessID": 2626160,
       "ProductionWorkOrderContractID": null,
-      "Package": null,
-      "Container": null,
+      "Package": "",
+      "Container": "",
       "ItemLocationID": 53,
       "ProductionProcessID": 31,
       "ProductionWorkstationID": 1,
@@ -21108,7 +21108,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 407227,
+      "DrawingRevisionId": 408555,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -21224,7 +21224,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406923,
+      "DrawingRevisionId": 408553,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -21340,7 +21340,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406913,
+      "DrawingRevisionId": 409600,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -21456,7 +21456,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406911,
+      "DrawingRevisionId": 409599,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -21572,7 +21572,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406920,
+      "DrawingRevisionId": 408551,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -21688,7 +21688,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406908,
+      "DrawingRevisionId": 409583,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -22500,7 +22500,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406856,
+      "DrawingRevisionId": 408547,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -23080,7 +23080,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406899,
+      "DrawingRevisionId": 417261,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -23196,7 +23196,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406901,
+      "DrawingRevisionId": 417263,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -24356,7 +24356,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406897,
+      "DrawingRevisionId": 417260,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -25400,7 +25400,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406896,
+      "DrawingRevisionId": 417259,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -26096,7 +26096,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406904,
+      "DrawingRevisionId": 417266,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -26444,7 +26444,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406894,
+      "DrawingRevisionId": 417257,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -26560,7 +26560,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406895,
+      "DrawingRevisionId": 417258,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -26792,7 +26792,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 416540,
+      "DrawingRevisionId": 406933,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -27720,7 +27720,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406794,
+      "DrawingRevisionId": 412471,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -27952,7 +27952,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 406791,
+      "DrawingRevisionId": 412469,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -37928,7 +37928,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 417306,
+      "DrawingRevisionId": 411597,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -38160,7 +38160,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 411591,
+      "DrawingRevisionId": 417302,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -38972,7 +38972,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 417305,
+      "DrawingRevisionId": 411596,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -39204,7 +39204,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 417304,
+      "DrawingRevisionId": 411593,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -39552,7 +39552,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 411592,
+      "DrawingRevisionId": 417303,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -40132,7 +40132,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 398962,
+      "DrawingRevisionId": 402279,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -42336,7 +42336,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 412501,
+      "DrawingRevisionId": 411664,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -43032,7 +43032,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 412499,
+      "DrawingRevisionId": 411661,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -43264,7 +43264,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 412499,
+      "DrawingRevisionId": 411661,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -44888,7 +44888,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": true,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 417308,
+      "DrawingRevisionId": 411600,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -55102,7 +55102,7 @@
     },
     {
       "CuttingPlanID": null,
-      "DeliveryNote": null,
+      "DeliveryNote": "SIT-000004493",
       "Contract": "25691",
       "WorkOrder": "M-WO-000116890",
       "Phase": "6",
@@ -55150,8 +55150,8 @@
       "Notes": null,
       "ProductionWorkOrderProcessID": 2654850,
       "ProductionWorkOrderContractID": null,
-      "Package": null,
-      "Container": null,
+      "Package": "",
+      "Container": "",
       "ItemLocationID": 955,
       "ProductionProcessID": 31,
       "ProductionWorkstationID": 1,
@@ -55218,7 +55218,7 @@
     },
     {
       "CuttingPlanID": null,
-      "DeliveryNote": null,
+      "DeliveryNote": "SIT-000004493",
       "Contract": "25691",
       "WorkOrder": "M-WO-000116891",
       "Phase": "6",
@@ -55266,8 +55266,8 @@
       "Notes": null,
       "ProductionWorkOrderProcessID": 2654856,
       "ProductionWorkOrderContractID": null,
-      "Package": null,
-      "Container": null,
+      "Package": "",
+      "Container": "",
       "ItemLocationID": 955,
       "ProductionProcessID": 31,
       "ProductionWorkstationID": 1,
@@ -55334,7 +55334,7 @@
     },
     {
       "CuttingPlanID": null,
-      "DeliveryNote": null,
+      "DeliveryNote": "SIT-000004493",
       "Contract": "25691",
       "WorkOrder": "M-WO-000116892",
       "Phase": "6",
@@ -55382,8 +55382,8 @@
       "Notes": null,
       "ProductionWorkOrderProcessID": 2654862,
       "ProductionWorkOrderContractID": null,
-      "Package": null,
-      "Container": null,
+      "Package": "",
+      "Container": "",
       "ItemLocationID": 955,
       "ProductionProcessID": 31,
       "ProductionWorkstationID": 1,
@@ -56372,7 +56372,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418694,
+      "DrawingRevisionId": 415621,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -56488,7 +56488,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418667,
+      "DrawingRevisionId": 415124,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -57764,7 +57764,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418694,
+      "DrawingRevisionId": 415621,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -58924,7 +58924,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418667,
+      "DrawingRevisionId": 415124,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -60432,7 +60432,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 415802,
+      "DrawingRevisionId": 415123,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -60780,7 +60780,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418694,
+      "DrawingRevisionId": 415621,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -61476,7 +61476,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418666,
+      "DrawingRevisionId": 415122,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -61824,7 +61824,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418667,
+      "DrawingRevisionId": 415124,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -62056,7 +62056,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 415802,
+      "DrawingRevisionId": 415123,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -64028,7 +64028,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418666,
+      "DrawingRevisionId": 415122,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -65304,7 +65304,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418666,
+      "DrawingRevisionId": 415122,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -65420,7 +65420,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 415802,
+      "DrawingRevisionId": 415123,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -67276,7 +67276,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 416383,
+      "DrawingRevisionId": 415103,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -68088,7 +68088,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 417658,
+      "DrawingRevisionId": 415603,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -68900,7 +68900,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 416383,
+      "DrawingRevisionId": 415103,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -70872,7 +70872,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 416383,
+      "DrawingRevisionId": 415103,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -72612,7 +72612,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 416387,
+      "DrawingRevisionId": 415118,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -74932,7 +74932,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 417658,
+      "DrawingRevisionId": 415603,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -75512,7 +75512,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 417658,
+      "DrawingRevisionId": 415603,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -75976,7 +75976,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 416387,
+      "DrawingRevisionId": 415118,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -76324,7 +76324,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 416387,
+      "DrawingRevisionId": 415118,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -76440,7 +76440,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 415827,
+      "DrawingRevisionId": 415622,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -77252,7 +77252,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 415827,
+      "DrawingRevisionId": 415622,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -78064,7 +78064,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 415827,
+      "DrawingRevisionId": 415622,
       "NcContractItemId": null,
       "HasModel": false
     },
@@ -93144,7 +93144,7 @@
       "NestEngineBarReference": null,
       "IsDeleted": false,
       "ReceivedFromMark": null,
-      "DrawingRevisionId": 418939,
+      "DrawingRevisionId": 399083,
       "NcContractItemId": null,
       "HasModel": false
     },
