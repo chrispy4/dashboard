@@ -38,13 +38,13 @@ def get_Token():
         # print(f"Token: {token}")
         return token
     else:
-        print(f"Error: {response.status_code}")
+        print(f"Auth Error: {response.status_code}")
         print("Will wait 10 seconds before retrying...")
         time.sleep(10)
         print("Retrying Auth request...")
-        get_Token()
+        return get_Token()
 
-def get_Data():
+def get_Data(retry=True):
   load_dotenv()
   token = os.getenv("auth_token")
 
@@ -74,6 +74,11 @@ def get_Data():
 
   response = requests.post(url, headers=headers, json=data)
 
+  if response.status_code == 401 and retry:
+     print("Token Invalid or Expired, fetching new token...")
+     get_Token()
+     return get_Data(retry=False)
+  
   if response.status_code == 200:
     print("Data_Req Response was 200")
     with open("./data.json", "w") as f:
@@ -83,20 +88,6 @@ def get_Data():
     print(f"Error: {response.status_code} \n {response.text}")
 
   return response.status_code
-
-if os.getenv("auth_token") == "":
-  print("No token found, fetching auth token")
-  get_Token()  
-else:
-  print("auth_token found, fetching data")
-  code = get_Data()
-  if code != 200:
-    print("Request was not 200, token could be invalid, fetching token")
-    get_Token()
-    time.sleep(10)
-    get_Data()
-  else:
-     print("Call using pre-existing token was successful")
 
 @app.route("/refresh-data", methods=["POST"])
 def refresh_data():

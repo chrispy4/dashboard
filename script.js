@@ -1,15 +1,16 @@
 let selectedLocation = "ALL";
 
 function showSpinner() {
-    document.getElementById("loadingOverlay").style.visibility = "visible";
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) overlay.style.visibility = "visible";
 }
 
 function hideSpinner() {
-    document.getElementById("loadingOverlay").style.visibility = "hidden";
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) overlay.style.visibility = "hidden";
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-
     // Assign table elements once
     tables.left.element = document.querySelector("#left-table");
     tables.right.element = document.querySelector("#right-table");
@@ -23,28 +24,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-document.getElementById("refreshBtn").addEventListener("click", async () => {
+// Refresh button logic
+const refreshBtn = document.getElementById("refreshBtn");
+if (refreshBtn) {
+    refreshBtn.addEventListener("click", async () => {
+        showSpinner();
 
-    showSpinner();
+        try {
+            const response = await fetch("http://127.0.0.1:5000/refresh-data", {
+                method: "POST"
+            });
 
-    try {
-        const response = await fetch("http://localhost:5000/refresh-data", {
-            method: "POST"
-        });
+            if (!response.ok) {
+                throw new Error("Server error");
+            }
 
-        if (!response.ok) {
-            throw new Error("Server error");
+            const result = await response.json();
+
+            if (result.success) {
+                alert("Data refreshed successfully!");
+                await reloadData(); // reload tables after refresh
+            } else {
+                alert("Data refresh failed on the server.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Failed to refresh data. See console for details.");
+        } finally {
+            hideSpinner();
         }
-
-        await reloadData();
-
-    } catch (error) {
-        alert("Failed to refresh data.");
-        console.error(error);
-    } finally {
-        hideSpinner();
-    }
-});
+    });
+}
 
 
 const headers = [
