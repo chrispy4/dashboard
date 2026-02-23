@@ -1,5 +1,52 @@
 let selectedLocation = "ALL";
 
+function showSpinner() {
+    document.getElementById("loadingOverlay").style.visibility = "visible";
+}
+
+function hideSpinner() {
+    document.getElementById("loadingOverlay").style.visibility = "hidden";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Assign table elements once
+    tables.left.element = document.querySelector("#left-table");
+    tables.right.element = document.querySelector("#right-table");
+
+    // Generate headers once
+    generateTableHead("left");
+    generateTableHead("right");
+
+    // Load initial data
+    reloadData();
+
+});
+
+document.getElementById("refreshBtn").addEventListener("click", async () => {
+
+    showSpinner();
+
+    try {
+        const response = await fetch("http://localhost:5000/refresh-data", {
+            method: "POST"
+        });
+
+        if (!response.ok) {
+            throw new Error("Server error");
+        }
+
+        await reloadData();
+
+    } catch (error) {
+        alert("Failed to refresh data.");
+        console.error(error);
+    } finally {
+        hideSpinner();
+    }
+});
+
+
 const headers = [
     "Contract",
     "Lot",
@@ -230,50 +277,54 @@ function applyFilters(tableKey) {
     generateTableBody(tableKey);
 }
 
-fetch('./data.json')
-.then(res => res.json())
-.then(data => {
+async function reloadData() {
 
-    const transformed = data.ProductionConsoleProcess
-        .filter(item =>
-            item.Process?.trim().toLowerCase() !== "fab - inspection"
-        )
-        .map(item => {
+    showSpinner();
 
-            let status = item.Process;
+    try {
+        const res = await fetch('./data.json?cacheBust=' + Date.now());
+        const data = await res.json();
 
-            if (status === "Fab - Fit-Up") {
-                status = "Not In Shop";
-            } else if (status === "Fab - Welding") {
-                status = "In Shop";
-            }
+        const transformed = data.ProductionConsoleProcess
+            .filter(item =>
+                item.Process?.trim().toLowerCase() !== "fab - inspection"
+            )
+            .map(item => {
 
-            return {
-                Contract: item.Contract,
-                Lot: item.Lot,
-                Qty: item.QuantityAtProcess,   // renamed
-                Status: status,                     // still stored for splitting
-                StartDate: item.StartDate,
-                EndDate: item.EndDate,
-                Assembly: item.ContractDrawing,     // renamed
-                Location: item.Location ?? ""
-            };
-        });
+                let status = item.Process;
 
-    populateLocationFilter(transformed);
+                if (status === "Fab - Fit-Up") {
+                    status = "Not In Shop";
+                } else if (status === "Fab - Welding") {
+                    status = "In Shop";
+                }
 
-    tables.left.element = document.querySelector("#left-table");
-    tables.right.element = document.querySelector("#right-table");
+                return {
+                    Contract: item.Contract,
+                    Lot: item.Lot,
+                    Qty: item.QuantityAtProcess,
+                    Status: status,
+                    StartDate: item.StartDate,
+                    EndDate: item.EndDate,
+                    Assembly: item.ContractDrawing,
+                    Location: item.Location ?? ""
+                };
+            });
 
-    tables.left.fullData = transformed.filter(r => r.Status !== "In Shop");
-    tables.right.fullData = transformed.filter(r => r.Status === "In Shop");
+        populateLocationFilter(transformed);
+        
+        tables.left.fullData = transformed.filter(r => r.Status !== "In Shop");
+        tables.right.fullData = transformed.filter(r => r.Status === "In Shop");
 
-    tables.left.filteredData = [...tables.left.fullData];
-    tables.right.filteredData = [...tables.right.fullData];
+        applyGlobalLocationFilter();
 
-    generateTableHead("left");
-    generateTableHead("right");
+    } catch (error) {
+        alert("Error loading data");
+        console.error(error);
+    } finally {
+        hideSpinner();
+    }
+}
 
-    generateTableBody("left");
-    generateTableBody("right");
-});
+// Initial load
+reloadData();

@@ -1,3 +1,5 @@
+from flask import Flask, jsonify
+from flask_cors import CORS
 import requests
 import time
 import os
@@ -5,9 +7,12 @@ import os
 from dotenv import set_key, load_dotenv
 from pathlib import Path
 
+app = Flask(__name__)
+# Allow only your frontend origin (recommended)
+CORS(app, resources={r"/refresh-data": {"origins": "*"}})
+
 ###############Token Mangament################
 env_file_path = Path(".env")
-
 
 ##########################
 
@@ -92,3 +97,13 @@ else:
     get_Data()
   else:
      print("Call using pre-existing token was successful")
+
+@app.route("/refresh-data", methods=["POST"])
+def refresh_data():
+    code = get_Data()
+    if code == 200:
+        return jsonify({"success": True})
+    return jsonify({"success": False}), 500
+
+if __name__ == "__main__":
+    app.run(port=5000)
