@@ -25,36 +25,42 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Refresh button logic
-const refreshBtn = document.getElementById("refreshBtn");
-if (refreshBtn) {
-    refreshBtn.addEventListener("click", async () => {
-        showSpinner();
+document.addEventListener("DOMContentLoaded", function (){
+    const refreshBtn = document.getElementById("refreshBtn");
 
-        try {
-            const response = await fetch("http://127.0.0.1:5000/refresh-data", {
-                method: "POST"
-            });
+    if (refreshBtn) {
+        refreshBtn.addEventListener("click", async () => {
+            showSpinner();
 
-            if (!response.ok) {
-                throw new Error("Server error");
+            try {
+                const response = await fetch("http://127.0.0.1:5000/refresh-data", {
+                    method: "POST"
+                });
+
+                if (!response.ok) {
+                    throw new Error("Server error");
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("Data refreshed successfully!");
+                    await reloadData(); // reload tables after refresh
+                } else {
+                    alert("Data refresh failed on the server.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Failed to refresh data. See console for details.");
+            } finally {
+                hideSpinner();
             }
+        });
+    }
 
-            const result = await response.json();
+});
 
-            if (result.success) {
-                alert("Data refreshed successfully!");
-                await reloadData(); // reload tables after refresh
-            } else {
-                alert("Data refresh failed on the server.");
-            }
-        } catch (error) {
-            console.error(error);
-            alert("Failed to refresh data. See console for details.");
-        } finally {
-            hideSpinner();
-        }
-    });
-}
+
 
 
 const headers = [
@@ -144,6 +150,8 @@ function generateTableHead(tableKey) {
     const tableObj = tables[tableKey];
     const table = tableObj.element;
 
+    if(!table) return;
+
     let thead = table.createTHead();
     let row = thead.insertRow();
 
@@ -180,6 +188,7 @@ function generateTableHead(tableKey) {
 function generateTableBody(tableKey) {
     const tableObj = tables[tableKey];
     const table = tableObj.element;
+    if(!table) return;
     const data = tableObj.filteredData;
 
     let oldTbody = table.querySelector("tbody");
