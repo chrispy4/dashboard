@@ -1,5 +1,10 @@
 let selectedLocation = "ALL";
 
+const REFRESH_INTERVAL_MS = 0.5 * 60 * 1000; // 5 minutes
+let countdownSeconds = REFRESH_INTERVAL_MS / 1000;
+let countdownTimer = null;
+let isRefreshing = false;
+
 function showSpinner() {
     const overlay = document.getElementById("loadingOverlay");
     if (overlay) overlay.style.visibility = "visible";
@@ -22,10 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Load initial data
     reloadData();
 
-});
-
-// Refresh button logic
-document.addEventListener("DOMContentLoaded", function (){
+    //Manual Refresh button
     const refreshBtn = document.getElementById("refreshBtn");
 
     if (refreshBtn) {
@@ -33,9 +35,7 @@ document.addEventListener("DOMContentLoaded", function (){
             showSpinner();
 
             try {
-                const response = await fetch("http://127.0.0.1:5000/refresh-data", {
-                    method: "POST"
-                });
+                const response = await fetch("http://127.0.0.1:5000/refresh-data", { method: "POST" });
 
                 if (!response.ok) {
                     throw new Error("Server error");
@@ -58,10 +58,9 @@ document.addEventListener("DOMContentLoaded", function (){
         });
     }
 
+    startAutoRefresh();
+
 });
-
-
-
 
 const headers = [
     "Contract",
@@ -296,6 +295,57 @@ function applyFilters(tableKey) {
     generateTableBody(tableKey);
 }
 
+function startAutoRefresh() {
+    countdownSeconds = REFRESH_INTERVAL_MS / 1000;
+
+    // Countdown
+    countdownTimer = setInterval(() => {
+        const countdownEl = document.getElementById("countdown");
+
+        const minutes = Math.floor(countdownSeconds / 60);
+        const seconds = countdownSeconds % 60;
+
+        if (countdownEl) {
+            countdownEl.textContent =
+                `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        }
+
+        countdownSeconds--;
+
+        if (countdownSeconds < 0) countdownSeconds = 0;
+
+    }, 1000);
+
+    // Auto refresh
+    setInterval(async () => {
+        if (isRefreshing) return;
+
+        isRefreshing = true;
+        showSpinner();
+
+        try {
+            const response = await fetch("http://127.0.0.1:5000/refresh-data", {
+                method: "POST"
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                await reloadData();
+                console.log("Auto refresh successful");
+            }
+
+        } catch (err) {
+            console.error("Auto refresh error:", err);
+        } finally {
+            hideSpinner();
+            countdownSeconds = REFRESH_INTERVAL_MS / 1000;
+            isRefreshing = false;
+        }
+
+    }, REFRESH_INTERVAL_MS);
+}
+
 async function reloadData() {
 
     showSpinner();
@@ -347,3 +397,4 @@ async function reloadData() {
 
 // Initial load
 reloadData();
+
