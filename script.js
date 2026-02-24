@@ -1,6 +1,6 @@
 let selectedLocation = "ALL";
 
-const REFRESH_INTERVAL_MS = 0.5 * 60 * 1000; // 5 minutes
+const REFRESH_INTERVAL_MS = 20 * 60 * 1000; // 5 minutes
 let countdownSeconds = REFRESH_INTERVAL_MS / 1000;
 let countdownTimer = null;
 let isRefreshing = false;
@@ -375,7 +375,7 @@ async function reloadData() {
                     Status: status,
                     StartDate: item.StartDate,
                     EndDate: item.EndDate,
-                    Assembly: item.ContractDrawing,
+                    Assembly: item.Mark,
                     Location: item.Location ?? ""
                 };
             });
