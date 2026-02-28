@@ -1,6 +1,6 @@
 let selectedLocation = "ALL";
-
-const REFRESH_INTERVAL_MS = 20 * 60 * 1000; // 5 minutes
+const SERVER_ADDRESS = "http://192.168.0.124:5010";
+const REFRESH_INTERVAL_MS = 20 * 60 * 1000; // 20 minutes
 let countdownSeconds = REFRESH_INTERVAL_MS / 1000;
 let countdownTimer = null;
 let isRefreshing = false;
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
             showSpinner();
 
             try {
-                const response = await fetch("http://127.0.0.1:5000/refresh-data", { method: "POST" });
+                const response = await fetch(SERVER_ADDRESS +"/refresh-data", { method: "POST" });
 
                 if (!response.ok) {
                     throw new Error("Server error");
@@ -187,7 +187,7 @@ function generateTableHead(tableKey) {
 function generateTableBody(tableKey) {
     const tableObj = tables[tableKey];
     const table = tableObj.element;
-    if(!table) return;
+    if (!table) return;
     const data = tableObj.filteredData;
 
     let oldTbody = table.querySelector("tbody");
@@ -200,6 +200,7 @@ function generateTableBody(tableKey) {
     data.forEach(rowData => {
         let row = tbody.insertRow();
         let isOverdue = false;
+        let isNearDue = false;
 
         headers.forEach(key => {
             let cell = row.insertCell();
@@ -207,12 +208,20 @@ function generateTableBody(tableKey) {
 
             if (key === "EndDate" && value) {
                 const endDate = new Date(value);
+
                 if (!isNaN(endDate)) {
                     endDate.setHours(0, 0, 0, 0);
+
+                    const diffTime = endDate - today;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
                     if (today > endDate) {
                         isOverdue = true;
+                    } else if (diffDays <= 3) {
+                        isNearDue = true;
                     }
                 }
+
                 value = formatDate(value);
             }
 
@@ -223,8 +232,11 @@ function generateTableBody(tableKey) {
             cell.textContent = value;
         });
 
+        // Apply row coloring priority
         if (isOverdue) {
-            row.style.backgroundColor = "#ff0000";
+            row.style.backgroundColor = "#ff4d4d"; // red
+        } else if (isNearDue) {
+            row.style.backgroundColor = "#e28a06"; // yellow
         }
     });
 
@@ -324,7 +336,7 @@ function startAutoRefresh() {
         showSpinner();
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/refresh-data", {
+            const response = await fetch(SERVER_ADDRESS +"/refresh-data", {
                 method: "POST"
             });
 

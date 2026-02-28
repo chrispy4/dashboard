@@ -9,7 +9,11 @@ from pathlib import Path
 
 app = Flask(__name__)
 # Allow only your frontend origin (recommended)
-CORS(app, resources={r"/refresh-data": {"origins": "*"}})
+CORS(
+    app,
+    resources={r"/*": {"origins": "*"}},
+    supports_credentials=True
+)
 
 ###############Token Mangament################
 env_file_path = Path(".env")
@@ -89,7 +93,7 @@ def get_Data(retry=True):
 
   return response.status_code
 
-@app.route("/refresh-data", methods=["POST"])
+@app.route("/refresh-data", methods=["POST", "OPTIONS"])
 def refresh_data():
     code = get_Data()
     if code == 200:
@@ -97,4 +101,4 @@ def refresh_data():
     return jsonify({"success": False}), 500
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(host="0.0.0.0", port=5010, debug=True)
