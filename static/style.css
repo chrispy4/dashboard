@@ -1,14 +1,20 @@
 table {
     border-collapse: collapse;
     width: 100%;
+    margin: 2rem;
 }
 th, td {
     border: 1px solid #ddd;
     padding: 10px;
-    text-align: center
+    text-align: center;
+    width: min-content;
 }
+
 th {
-    background-color: #f2f2f2;
+    background-color: #000;
+    color: #00ffcc;                   /* Bright header text */
+    font-size: 1.4rem;
+    border: 2px solid #333;
 }
 
 body {
@@ -22,7 +28,7 @@ body {
 
 /* Main Title */
 h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     text-align: center;
     margin: 0.3rem 0;
 }
@@ -44,11 +50,8 @@ h2 {
 
 .table-container {
     display: flex;
-    gap: 15px;
-    justify-content: center;
-    padding: 0 15px;
+    justify-content: space-around;
     width: 100%;
-    box-sizing: border-box;
 }
 
 /* Tables */
@@ -59,18 +62,9 @@ table {
     background-color: #222;
 }
 
-/* Headers */
-th {
-    background-color: #000;
-    color: #00ffcc;                   /* Bright header text */
-    font-size: 1.4rem;
-    border: 2px solid #333;
-    padding: 0.1rem;
-}
-
 /* Cells */
 td {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     border: 1px solid #333;
     padding: 0.3rem;
 }
@@ -103,10 +97,16 @@ th span {
     margin-left: 5px;
 }
 
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 button {
     font-size: 14px;
-    padding: 8px 18px;
-    margin-bottom: 15px;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
     cursor: pointer;
     background-color: #007bff;
     color: #fff;

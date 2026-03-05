@@ -1,5 +1,5 @@
 let selectedLocation = "ALL";
-const SERVER_ADDRESS = "http://192.168.0.124:5010";
+const SERVER_ADDRESS = "http://192.168.0.9:5010";
 const REFRESH_INTERVAL_MS = 20 * 60 * 1000; // 20 minutes
 let countdownSeconds = REFRESH_INTERVAL_MS / 1000;
 let countdownTimer = null;
@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const response = await fetch(SERVER_ADDRESS +"/refresh-data", { method: "POST" });
 
                 if (!response.ok) {
+                    console.error(response.body)
                     throw new Error("Server error");
                 }
 
