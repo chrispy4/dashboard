@@ -1,5 +1,6 @@
 let selectedLocation = "ALL";
-const SERVER_ADDRESS = "http://192.168.0.9:5010";
+// const SERVER_ADDRESS = "http://192.168.0.9:5010";
+const SERVER_ADDRESS = 'http://127.0.0.1:5010'
 const REFRESH_INTERVAL_MS = 20 * 60 * 1000; // 20 minutes
 let countdownSeconds = REFRESH_INTERVAL_MS / 1000;
 let countdownTimer = null;
@@ -15,6 +16,29 @@ function hideSpinner() {
     if (overlay) overlay.style.visibility = "hidden";
 }
 
+// [IMPROVED] Non-blocking toast instead of alert()
+function showToast(msg, isError = false) {
+    let toast = document.getElementById("toast");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        toast.style.cssText = `
+            position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+            padding: 0.6rem 1.4rem; border-radius: 6px; font-size: 0.95rem;
+            color: #fff; z-index: 99999; opacity: 0;
+            transition: opacity 0.3s ease; pointer-events: none;
+        `;
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = msg;
+    toast.style.background = isError ? "#cc2200" : "#007bff";
+    toast.style.opacity = "1";
+
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => toast.style.opacity = "0", 3000);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     // Assign table elements once
     tables.left.element = document.querySelector("#left-table");
@@ -27,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Load initial data
     reloadData();
 
-    //Manual Refresh button
+    // Manual Refresh button
     const refreshBtn = document.getElementById("refreshBtn");
 
     if (refreshBtn) {
@@ -35,24 +59,24 @@ document.addEventListener("DOMContentLoaded", function () {
             showSpinner();
 
             try {
-                const response = await fetch(SERVER_ADDRESS +"/refresh-data", { method: "POST" });
+                const response = await fetch(SERVER_ADDRESS + "/refresh-data", { method: "POST" });
 
                 if (!response.ok) {
-                    console.error(response.body)
-                    throw new Error("Server error");
+                    console.error(response);
+                    throw new Error(`HTTP ERROR! Status: ${response.status} : ${response.statusText}`);
                 }
 
                 const result = await response.json();
 
                 if (result.success) {
-                    alert("Data refreshed successfully!");
-                    await reloadData(); // reload tables after refresh
+                    showToast("Data refreshed successfully!"); // [IMPROVED] was alert()
+                    await reloadData();
                 } else {
-                    alert("Data refresh failed on the server.");
+                    showToast("Data refresh failed on the server.", true); // [IMPROVED] was alert()
                 }
             } catch (error) {
                 console.error(error);
-                alert("Failed to refresh data. See console for details.");
+                showToast("Failed to refresh data. See console for details.", true); // [IMPROVED] was alert()
             } finally {
                 hideSpinner();
             }
@@ -60,7 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     startAutoRefresh();
-
 });
 
 const headers = [
@@ -89,25 +112,25 @@ const tables = {
 };
 
 function populateLocationFilter(data) {
-    const select = document.getElementById("locationFilter");
+    const oldSelect = document.getElementById("locationFilter");
+    const newSelect = oldSelect.cloneNode(false);
+    oldSelect.parentNode.replaceChild(newSelect, oldSelect);
 
-    // Get unique locations
     const locations = [...new Set(
         data.map(d => d.Location).filter(l => l)
     )].sort();
 
-    // Add "All" option
-    select.innerHTML = `<option value="ALL">All Locations</option>`;
+    newSelect.innerHTML = `<option value="ALL">All Locations</option>`;
 
     locations.forEach(loc => {
         const option = document.createElement("option");
         option.value = loc;
         option.textContent = loc;
-        select.appendChild(option);
+        newSelect.appendChild(option);
     });
 
-    select.addEventListener("change", () => {
-        selectedLocation = select.value;
+    newSelect.addEventListener("change", () => {
+        selectedLocation = newSelect.value;
         applyGlobalLocationFilter();
     });
 }
@@ -141,6 +164,7 @@ function formatDate(dateString) {
 }
 
 function detectType(value) {
+    if (value == null || value === "") return "string";
     if (!isNaN(value)) return "number";
     if (!isNaN(Date.parse(value))) return "date";
     return "string";
@@ -150,7 +174,7 @@ function generateTableHead(tableKey) {
     const tableObj = tables[tableKey];
     const table = tableObj.element;
 
-    if(!table) return;
+    if (!table) return;
 
     let thead = table.createTHead();
     let row = thead.insertRow();
@@ -170,15 +194,13 @@ function generateTableHead(tableKey) {
 
     // Filter row
     let filterRow = thead.insertRow();
-    headers.forEach((header, index) => {
+    headers.forEach((header) => { // [IMPROVED] removed unused index param
         let th = document.createElement("th");
         let input = document.createElement("input");
         input.placeholder = "Filter...";
         input.style.width = "95%";
 
-        input.addEventListener("input", () =>
-            applyFilters(tableKey)
-        );
+        input.addEventListener("input", () => applyFilters(tableKey));
 
         th.appendChild(input);
         filterRow.appendChild(th);
@@ -233,11 +255,10 @@ function generateTableBody(tableKey) {
             cell.textContent = value;
         });
 
-        // Apply row coloring priority
         if (isOverdue) {
-            row.style.backgroundColor = "#ff4d4d"; // red
+            row.style.backgroundColor = "#ff4d4d";
         } else if (isNearDue) {
-            row.style.backgroundColor = "#e28a06"; // yellow
+            row.style.backgroundColor = "#e28a06";
         }
     });
 
@@ -254,7 +275,10 @@ function sortColumn(tableKey, header) {
         tableObj.sort.asc = true;
     }
 
-    const type = detectType(tableObj.filteredData[0]?.[header]);
+    // [IMPROVED] Sample first non-empty value instead of always row 0
+    const sample = tableObj.filteredData
+        .find(r => r[header] != null && r[header] !== "")?.[header];
+    const type = detectType(sample);
 
     tableObj.filteredData.sort((a, b) => {
         let valA = a[header] ?? "";
@@ -297,7 +321,11 @@ function applyFilters(tableKey) {
     const tableObj = tables[tableKey];
     const inputs = tableObj.element.querySelectorAll("thead input");
 
-    tableObj.filteredData = tableObj.fullData.filter(row => {
+    const locationFiltered = selectedLocation === "ALL"
+        ? tableObj.fullData
+        : tableObj.fullData.filter(r => r.Location === selectedLocation);
+
+    tableObj.filteredData = locationFiltered.filter(row => {
         return headers.every((header, index) => {
             const filterValue = inputs[index].value.toLowerCase();
             const cellValue = (row[header] ?? "").toString().toLowerCase();
@@ -309,6 +337,8 @@ function applyFilters(tableKey) {
 }
 
 function startAutoRefresh() {
+    // [IMPROVED] Clear existing timer before re-init to prevent stacking
+    if (countdownTimer) clearInterval(countdownTimer);
     countdownSeconds = REFRESH_INTERVAL_MS / 1000;
 
     // Countdown
@@ -319,12 +349,10 @@ function startAutoRefresh() {
         const seconds = countdownSeconds % 60;
 
         if (countdownEl) {
-            countdownEl.textContent =
-                `${minutes}:${seconds.toString().padStart(2, "0")}`;
+            countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
         }
 
         countdownSeconds--;
-
         if (countdownSeconds < 0) countdownSeconds = 0;
 
     }, 1000);
@@ -337,9 +365,11 @@ function startAutoRefresh() {
         showSpinner();
 
         try {
-            const response = await fetch(SERVER_ADDRESS +"/refresh-data", {
-                method: "POST"
-            });
+            const response = await fetch(SERVER_ADDRESS + "/refresh-data", { method: "POST" });
+            if (!response.ok) {
+                console.error(response);
+                throw new Error(`HTTP ${response.status}`);
+            }
 
             const result = await response.json();
 
@@ -350,6 +380,7 @@ function startAutoRefresh() {
 
         } catch (err) {
             console.error("Auto refresh error:", err);
+            showToast("Auto-refresh failed. Data may be stale.", true); // [IMPROVED] visible feedback
         } finally {
             hideSpinner();
             countdownSeconds = REFRESH_INTERVAL_MS / 1000;
@@ -360,11 +391,12 @@ function startAutoRefresh() {
 }
 
 async function reloadData() {
-
     showSpinner();
 
     try {
         const res = await fetch('./data.json?cacheBust=' + Date.now());
+        // [IMPROVED] Check res.ok before parsing JSON
+        if (!res.ok) throw new Error(`Failed to load data.json: ${res.status} ${res.statusText}`);
         const data = await res.json();
 
         const transformed = data.ProductionConsoleProcess
@@ -372,7 +404,6 @@ async function reloadData() {
                 item.Process?.trim().toLowerCase() !== "fab - inspection"
             )
             .map(item => {
-
                 let status = item.Process;
 
                 if (status === "Fab - Fit-Up") {
@@ -394,20 +425,16 @@ async function reloadData() {
             });
 
         populateLocationFilter(transformed);
-        
+
         tables.left.fullData = transformed.filter(r => r.Status !== "In Shop");
         tables.right.fullData = transformed.filter(r => r.Status === "In Shop");
 
         applyGlobalLocationFilter();
 
     } catch (error) {
-        alert("Error loading data");
+        showToast("Error loading data. See console for details.", true); // [IMPROVED] was alert()
         console.error(error);
     } finally {
         hideSpinner();
     }
 }
-
-// Initial load
-reloadData();
-
