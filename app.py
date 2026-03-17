@@ -5,6 +5,7 @@ import time
 import os
 import logging
 import sys
+from logging.handlers import RotatingFileHandler
 
 from dotenv import set_key, load_dotenv
 from pathlib import Path
@@ -22,23 +23,46 @@ load_dotenv()
 ############################
 
 ############################
-# Logging to STERR
+# Logging to STDERR + File
 ############################
 
-logging.basicConfig(
-    stream = sys.stderr,
-    level = logging.ERROR,
-    format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+LOG_FILE = "app.log"
+LOG_MAX_BYTES = 5 * 1024 * 1024  # 5 MB per file
+LOG_BACKUP_COUNT = 3              # Keep app.log, app.log.1, app.log.2, app.log.3
+
+log_formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 
+# File handler (rotating)
+file_handler = RotatingFileHandler(
+    LOG_FILE,
+    maxBytes=LOG_MAX_BYTES,
+    backupCount=LOG_BACKUP_COUNT,
+    encoding="utf-8"
+)
+file_handler.setLevel(logging.ERROR)
+file_handler.setFormatter(log_formatter)
+
+# Stderr handler (keep existing behaviour)
+stderr_handler = logging.StreamHandler(sys.stderr)
+stderr_handler.setLevel(logging.ERROR)
+stderr_handler.setFormatter(log_formatter)
+
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.ERROR)
+logger.addHandler(file_handler)
+logger.addHandler(stderr_handler)
+
 ################################
 
-def get_token(retries=5):
+def get_token(retries=5, _attempt=1):
+    MAX_RETRIES = 5
     url = "http://192.168.0.18/STRUMISWebServiceCore/api/User/login"
 
     headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
 
     data = {
@@ -46,33 +70,83 @@ def get_token(retries=5):
         "password": os.getenv("API_PASS")
     }
 
-    print("Sending Auth Request...\n")
+    print(f"Sending Auth Request (attempt {_attempt}/{MAX_RETRIES})...\n")
 
+    t_start = time.monotonic()
     try:
-        response = requests.post(url, headers=headers, json=data, timeout=10)
+        # response = requests.post(url, headers=headers, json=data, timeout=10)
+        req = requests.Request('POST', url, headers=headers, json=data)
+        prepared = req.prepare()
+        print("=== OUTGOING REQUEST ===")
+        print("HEADERS:", dict(prepared.headers))
+        print("BODY:", prepared.body)
+        print("========================")
+        response = requests.Session().send(prepared, timeout=10)
     except requests.exceptions.Timeout:
-        raise Exception("Auth API timed out")
-    except requests.exceptions.ConnectionError:
-        raise Exception("Could not reach auth API at 192.168.0.18")
+        elapsed = time.monotonic() - t_start
+        logger.error(
+            "Auth API timed out after %.2fs (attempt %d/%d)",
+            elapsed, _attempt, MAX_RETRIES,
+            exc_info=True
+        )
+        raise Exception(f"Auth API timed out after {elapsed:.2f}s")
+    except requests.exceptions.ConnectionError as e:
+        elapsed = time.monotonic() - t_start
+        logger.error(
+            "Could not reach auth API at 192.168.0.18 after %.2fs (attempt %d/%d): %s",
+            elapsed, _attempt, MAX_RETRIES, e,
+            exc_info=True
+        )
+        raise Exception(f"Could not reach auth API at 192.168.0.18: {e}")
+
+    elapsed = time.monotonic() - t_start
 
     if response.status_code != 200:
-        if retries <=0:
-            raise Exception("Auth failed after max retries")
+        # Log full details for every failed attempt
+        logger.error(
+            "Auth attempt %d/%d FAILED | status=%s | elapsed=%.2fs\n"
+            "  Response headers: %s\n"
+            "  Response body:    %s",
+            _attempt, MAX_RETRIES,
+            response.status_code,
+            elapsed,
+            dict(response.headers),
+            response.text  # full body, never truncated
+        )
+
+        if retries <= 0:
+            raise Exception(
+                f"Auth failed after {MAX_RETRIES} attempts. "
+                f"Last status: {response.status_code}. "
+                f"Last body: {response.text}"
+            )
+
+        print(f"Auth failed (attempt {_attempt}), retrying in 5s...")
         time.sleep(5)
-        return get_token(retries-1)
-    
+        return get_token(retries - 1, _attempt=_attempt + 1)
+
     response_data = response.json()
     token = response_data.get("Token")
 
     if token:
         set_key(dotenv_path=env_file_path, key_to_set="auth_token", value_to_set=token)
-        print("Auth request successful.")
+        print(f"Auth request successful (attempt {_attempt}, elapsed {elapsed:.2f}s).")
         return token
-    raise Exception("Auth Succeeded but no token in response body")
+
+    logger.error(
+        "Auth HTTP 200 but no 'Token' field in response (attempt %d/%d) | elapsed=%.2fs\n"
+        "  Response headers: %s\n"
+        "  Response body:    %s",
+        _attempt, MAX_RETRIES,
+        elapsed,
+        dict(response.headers),
+        response.text
+    )
+    raise Exception(f"Auth returned 200 but no token. Body: {response.text}")
 
 
 def get_Data(retry=True):
-    load_dotenv()
+    load_dotenv(override=True)
     token = os.getenv("auth_token")
 
     if not token:
@@ -102,16 +176,22 @@ def get_Data(retry=True):
         "employeeID": 0,
         "processView": 0
     }
-    
-    try:                                                        # ← add this
-        response = requests.post(url, headers=headers, json=data, timeout=10)
+
+    try:
+        response = requests.post(url, headers=headers, json=data, timeout=(5, 30))
     except requests.exceptions.Timeout:
+        logger.error("Data API timed out", exc_info=True)
         raise Exception("Data API timed out after 10s")
     except requests.exceptions.ConnectionError:
+        logger.error("Could not reach data API at 192.168.0.18", exc_info=True)
         raise Exception("Could not reach data API at 192.168.0.18")
 
     if response.status_code == 401 and retry:
-        print("Token expired. Fetching new token...")
+        print("Token expired (401). Fetching new token and retrying once...")
+        logger.error(
+            "Data API returned 401 | headers: %s | body: %s",
+            dict(response.headers), response.text
+        )
         get_token()
         return get_Data(retry=False)
 
@@ -121,6 +201,14 @@ def get_Data(retry=True):
             f.write(response.text)
         return response
 
+    logger.error(
+        "Data API returned unexpected status %s\n"
+        "  Response headers: %s\n"
+        "  Response body:    %s",
+        response.status_code,
+        dict(response.headers),
+        response.text
+    )
     print(f"Error: {response.status_code}")
     return response
 
@@ -143,13 +231,24 @@ def refresh_data():
     try:
         resp = get_Data()
     except Exception as e:
-        logger.error(f"get_Data failed: {e}", exc_info=True)  # exc_info logs full traceback
+        logger.error("get_Data failed: %s", e, exc_info=True)
         return jsonify({"success": False, "reason": str(e)}), 500
 
     if resp.status_code == 200:
         return jsonify({"success": True})
-    logger.error(resp.text)
-    return jsonify({"success": False, "reason": resp.text}), 500
+
+    logger.error(
+        "refresh_data: non-200 response %s\n"
+        "  Response headers: %s\n"
+        "  Response body:    %s",
+        resp.status_code, dict(resp.headers), resp.text
+    )
+    return jsonify({
+        "success": False,
+        "http_status": resp.status_code,
+        "reason": resp.text,
+        "headers": dict(resp.headers)
+    }), 500
 
 ############################
 

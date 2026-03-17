@@ -1,9 +1,16 @@
-let selectedLocation = "ALL";
+// Read ?location= query param on page load, default to "ALL"
+function getLocationFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("location") || "ALL";
+}
+
+let selectedLocation = getLocationFromURL();
 // const SERVER_ADDRESS = "http://192.168.0.9:5010";
 const SERVER_ADDRESS = 'http://127.0.0.1:5010'
 const REFRESH_INTERVAL_MS = 20 * 60 * 1000; // 20 minutes
 let countdownSeconds = REFRESH_INTERVAL_MS / 1000;
 let countdownTimer = null;
+let autoRefreshTimer = null;
 let isRefreshing = false;
 
 function showSpinner() {
@@ -129,8 +136,27 @@ function populateLocationFilter(data) {
         newSelect.appendChild(option);
     });
 
+    // Restore the active filter after the dropdown is rebuilt.
+    // selectedLocation persists across data refreshes in the module-level variable.
+    const availableValues = ["ALL", ...locations];
+    if (selectedLocation !== "ALL" && !availableValues.includes(selectedLocation)) {
+        // Previously selected location no longer exists in new data — reset quietly
+        selectedLocation = "ALL";
+    }
+    newSelect.value = selectedLocation;
+
     newSelect.addEventListener("change", () => {
         selectedLocation = newSelect.value;
+
+        // Keep URL param in sync without reloading
+        const url = new URL(window.location);
+        if (selectedLocation === "ALL") {
+            url.searchParams.delete("location");
+        } else {
+            url.searchParams.set("location", selectedLocation);
+        }
+        window.history.replaceState({}, "", url);
+
         applyGlobalLocationFilter();
     });
 }
@@ -139,6 +165,7 @@ function applyGlobalLocationFilter() {
     Object.keys(tables).forEach(tableKey => {
         const tableObj = tables[tableKey];
 
+        // fullData is already sorted by EndDate — filtering preserves that order
         if (selectedLocation === "ALL") {
             tableObj.filteredData = [...tableObj.fullData];
         } else {
@@ -146,6 +173,9 @@ function applyGlobalLocationFilter() {
                 row => row.Location === selectedLocation
             );
         }
+
+        // Reset manual column sort so EndDate order is respected
+        tableObj.sort = { column: null, asc: true };
 
         generateTableBody(tableKey);
     });
@@ -358,7 +388,8 @@ function startAutoRefresh() {
     }, 1000);
 
     // Auto refresh
-    setInterval(async () => {
+    if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+    autoRefreshTimer = setInterval(async () => {
         if (isRefreshing) return;
 
         isRefreshing = true;
@@ -424,10 +455,20 @@ async function reloadData() {
                 };
             });
 
+        // Sort by EndDate ascending — oldest/earliest due first, nulls at bottom
+        const sortByEndDate = (a, b) => {
+            const dateA = a.EndDate ? new Date(a.EndDate) : null;
+            const dateB = b.EndDate ? new Date(b.EndDate) : null;
+            if (!dateA && !dateB) return 0;
+            if (!dateA) return 1;
+            if (!dateB) return -1;
+            return dateA - dateB;
+        };
+
         populateLocationFilter(transformed);
 
-        tables.left.fullData = transformed.filter(r => r.Status !== "In Shop");
-        tables.right.fullData = transformed.filter(r => r.Status === "In Shop");
+        tables.left.fullData = transformed.filter(r => r.Status !== "In Shop").sort(sortByEndDate);
+        tables.right.fullData = transformed.filter(r => r.Status === "In Shop").sort(sortByEndDate);
 
         applyGlobalLocationFilter();
 
