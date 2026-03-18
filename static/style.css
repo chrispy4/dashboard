@@ -1,13 +1,53 @@
+/* ─────────────────────────────────────────────
+   NAVIGATION BAR
+───────────────────────────────────────────── */
+.site-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #000;
+    padding: 0.5rem 1rem;
+    border-bottom: 2px solid #333;
+}
+
+.nav-link {
+    display: inline-block;
+    padding: 0.35em 1.1em;
+    font-size: clamp(0.85rem, 1vw, 1.2rem);
+    font-family: Arial, Helvetica, sans-serif;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+
+.nav-link:hover {
+    color: #00ffcc;
+    border-color: #333;
+    background-color: #1a1a1a;
+}
+
+.nav-link.active {
+    color: #00ffcc;
+    border-color: #00ffcc44;
+    background-color: #0d2b24;
+    font-weight: bold;
+}
+
+/* ─────────────────────────────────────────────
+   TABLE
+───────────────────────────────────────────── */
 table {
     border-collapse: collapse;
     width: 100%;
-    margin: 1rem; /* reduced from 2rem */
+    margin: 1rem;
     table-layout: fixed;
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 6px; /* reduced from 10px */
+    padding: 6px;
     text-align: center;
     word-wrap: break-word;
     overflow-wrap: anywhere;
@@ -16,13 +56,16 @@ th, td {
 th {
     background-color: #000;
     color: #00ffcc;
-    font-size: clamp(0.9rem, 1.2vw, 1.4rem); /* slightly smaller */
+    font-size: clamp(0.9rem, 1.2vw, 1.4rem);
     border: 2px solid #333;
 }
 
+/* ─────────────────────────────────────────────
+   GLOBAL
+───────────────────────────────────────────── */
 body {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: clamp(0.9rem, 1vw, 1.5rem); /* smaller base */
+    font-size: clamp(0.9rem, 1vw, 1.5rem);
     background-color: #111;
     color: #fff;
     margin: 0;
@@ -55,7 +98,7 @@ h2 {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    gap: 0.5rem; /* tighter spacing */
+    gap: 0.5rem;
 }
 
 /* Tables stay side-by-side */
@@ -67,7 +110,7 @@ table {
 
 /* Cells */
 td {
-    font-size: clamp(0.9rem, 1.1vw, 1.6rem); /* reduced */
+    font-size: clamp(0.9rem, 1.1vw, 1.6rem);
     border: 1px solid #333;
     padding: 0.25rem;
 }
@@ -100,6 +143,9 @@ th span {
     margin-left: 3px;
 }
 
+/* ─────────────────────────────────────────────
+   BUTTON / CONTROLS
+───────────────────────────────────────────── */
 .buttonContainer {
     display: flex;
     justify-content: center;
@@ -123,7 +169,9 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Overlay */
+/* ─────────────────────────────────────────────
+   LOADING OVERLAY
+───────────────────────────────────────────── */
 #loadingOverlay {
     position: fixed;
     top: 0;
@@ -138,7 +186,6 @@ button:hover {
     visibility: hidden;
 }
 
-/* Spinner */
 .spinner {
     width: clamp(30px, 4vw, 80px);
     height: clamp(30px, 4vw, 80px);
