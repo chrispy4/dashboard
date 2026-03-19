@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Shipping Tracker</title>
+        <link rel="stylesheet" href="static/style.css">
+    </head>
+    <body>
+        <nav class="site-nav">
+            <a href="/" class="nav-link">⚙️ Fabrication</a>
+            <a href="/coating" class="nav-link">🎨 Coating</a>
+            <a href="/shipping" class="nav-link active">🚚 Shipping</a>
+        </nav>
+
+        <div class="buttonContainer">
+            <div style="text-align:center;">
+                <select id="locationFilter"></select>
+                <button id="refreshBtn">Refresh Data</button>
+                <div id="refreshInfo">Next update in: <span id="countdown">--</span></div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div>
+                <h1>Ready to Ship</h1>
+                <table id="left-table"></table>
+            </div>
+            <div>
+                <h1>In Loading Zone</h1>
+                <table id="right-table"></table>
+            </div>
+        </div>
+
+        <div id="loadingOverlay">
+            <div class="spinner"></div>
+        </div>
+
+        <script>
+            window.PAGE_CONFIG = {
+                leftLabel:       "Ready to Ship",
+                rightLabel:      "In Loading Zone",
+                filterLeft:      row => row.Status === "Ready to Ship",
+                filterRight:     row => row.Status === "In Loading Zone",
+                dataFile:        "data3.json",
+                refreshEndpoint: "/refresh-data3",
+                headers:         ["Contract", "Lot", "Assembly", "Qty", "StartDate", "EndDate"]
+            };
+        </script>
+        <script src="static/script.js"></script>
+    </body>
+</html>

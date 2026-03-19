@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Fab Tracker</title>
+        <link rel="stylesheet" href="static/style.css">
+    </head>
+    <body>
+        <nav class="site-nav">
+            <a href="/" class="nav-link active">⚙️ Fabrication</a>
+            <a href="/coating" class="nav-link">🎨 Coating</a>
+            <a href="/shipping" class="nav-link">🚚 Shipping</a>
+        </nav>
+
+        <div class="buttonContainer">
+            <div style="text-align:center;">
+                <select id="locationFilter"></select>
+                <button id="refreshBtn">Refresh Data</button>
+                <div id="refreshInfo">Next update in: <span id="countdown">--</span></div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div>
+                <h1>Not In Shop</h1>
+                <table id="left-table"></table>
+            </div>
+            <div>
+                <h1>In Shop</h1>
+                <table id="right-table"></table>
+            </div>
+        </div>
+
+        <div id="loadingOverlay">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Page tells script.js which data view to use -->
+        <script>
+            window.PAGE_CONFIG = {
+                leftLabel:       "Not In Shop",
+                rightLabel:      "In Shop",
+                filterLeft:      row => row.Status === "Not In Shop",
+                filterRight:     row => row.Status === "In Shop",
+                dataFile:        "data.json",
+                refreshEndpoint: "/refresh-data"
+            };
+        </script>
+        <script src="static/script.js"></script>
+    </body>
+</html>

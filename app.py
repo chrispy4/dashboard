@@ -69,10 +69,10 @@ def get_token(retries=5, _attempt=1):
     try:
         req      = requests.Request("POST", url, headers=headers, json=data)
         prepared = req.prepare()
-        print("=== OUTGOING REQUEST ===")
-        print("HEADERS:", dict(prepared.headers))
-        print("BODY:",    prepared.body)
-        print("========================")
+        # print("=== OUTGOING REQUEST ===")
+        # print("HEADERS:", dict(prepared.headers))
+        # print("BODY:",    prepared.body)
+        # print("========================")
         response = requests.Session().send(prepared, timeout=10)
     except requests.exceptions.Timeout:
         elapsed = time.monotonic() - t_start
@@ -214,6 +214,12 @@ def coating():
     return render_template("coating.html")
 
 
+@app.route("/shipping")
+def shipping():
+    """Shipping page — Ready to Ship / In Loading Zone."""
+    return render_template("shipping.html")
+
+
 @app.route("/data.json")
 def serve_data():
     return send_from_directory(".", "data.json")
@@ -222,6 +228,11 @@ def serve_data():
 @app.route("/data2.json")
 def serve_data2():
     return send_from_directory(".", "data2.json")
+
+
+@app.route("/data3.json")
+def serve_data3():
+    return send_from_directory(".", "data3.json")
 
 
 @app.route("/refresh-data", methods=["POST"])
@@ -276,7 +287,37 @@ def refresh_data2():
         "headers":     dict(resp.headers)
     }), 500
 
+
+@app.route("/refresh-data3", methods=["POST"])
+def refresh_data3():
+    """Shipping page — fetches data3.json (productionStageID=5).
+
+    Adjust production_stage_id to match your Strumis shipping stage.
+    """
+    try:
+        resp = get_Data(production_stage_id=5, output_file="data3.json")
+    except Exception as e:
+        logger.error("get_Data (shipping) failed: %s", e, exc_info=True)
+        return jsonify({"success": False, "reason": str(e)}), 500
+
+    if resp.status_code == 200:
+        return jsonify({"success": True})
+
+    logger.error(
+        "refresh_data3: non-200 response %s\n"
+        "  Response headers: %s\n  Response body:    %s",
+        resp.status_code, dict(resp.headers), resp.text
+    )
+    return jsonify({
+        "success":     False,
+        "http_status": resp.status_code,
+        "reason":      resp.text,
+        "headers":     dict(resp.headers)
+    }), 500
+
 ############################
 
 if __name__ == "__main__":
+    if not os.getenv("API_USER") or not os.getenv("API_PASS"):
+        raise RuntimeError("API_USER and API_PASS must be set in .env before starting")
     app.run(host="0.0.0.0", port=5010, debug=True)

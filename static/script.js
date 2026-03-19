@@ -36,7 +36,7 @@ let isRefreshing      = false;
 // ─────────────────────────────────────────────
 // TABLE STATE
 // ─────────────────────────────────────────────
-const headers = ["Contract", "Lot", "Assembly", "Qty", "StartDate", "EndDate"];
+const headers = PAGE_CONFIG.headers || ["Contract", "Lot", "Assembly", "Qty", "StartDate", "EndDate"];
 
 const tables = {
     left: {
@@ -381,26 +381,26 @@ function startAutoRefresh() {
  */
 function mapRow(item) {
     const processMap = {
-        "Fab - Fit-Up":           "Not In Shop",
-        "Fab - Welding":          "In Shop",
-        // ── Add / adjust your real Strumis process names below ──
-        "Coating - Prep":         "Ready for Coating",
-        "Coating - Blast":        "Ready for Coating",
-        "Coating - Application":  "In Coating",
-        "Coating - Paint":        "In Coating"
+        "Fab - Fit-Up":                  "Not In Shop",
+        "Fab - Welding":                 "In Shop",
+        "Coat - Shop Paint":             "Ready for Coating",
+        "Coat - Prime":                  "Ready for Coating",
+        "Shp - Loading":                "Ready to Ship",
+        "Shp - Shipped":                 "Ready to Ship"
     };
 
     const status = processMap[item.Process?.trim()] ?? item.Process;
 
     return {
-        Contract:  item.Contract,
-        Lot:       item.Lot,
-        Qty:       item.QuantityAtProcess,
-        Status:    status,
-        StartDate: item.StartDate,
-        EndDate:   item.EndDate,
-        Assembly:  item.Mark,
-        Location:  item.Location ?? ""
+        Contract:    item.Contract,
+        Lot:         item.Lot,
+        Qty:         item.QuantityAtProcess,
+        Status:      status,
+        StartDate:   item.StartDate,
+        EndDate:     item.EndDate,
+        Assembly:    item.Mark,
+        Location:    item.Location ?? "",
+        PaintFinish: item.PaintFinish ?? ""
     };
 }
 
